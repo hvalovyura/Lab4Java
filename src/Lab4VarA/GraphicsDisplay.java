@@ -142,4 +142,59 @@ public class GraphicsDisplay extends JPanel
         }
     }
 
+    public void paintCoponent(Graphics g)
+    {
+        super.paintComponent(g);
+
+        if(graphicsData == null || graphicsData.length == 0) return;
+
+        minX = graphicsData[0][0];
+        maxX = graphicsData[graphicsData.length - 1][0];
+        minY = graphicsData[0][1];
+        maxY = minY;
+
+        for(int i = 0; i < graphicsData.length; i++)
+        {
+            if(graphicsData[i][1] < minY)
+            {
+                minY = graphicsData[i][1];
+            }
+            if(graphicsData[i][1] > maxY)
+            {
+                maxY = graphicsData[i][1];
+            }
+        }
+
+        double scaleX = getSize().getWidth() / (maxX - minX);
+        double scaleY = getSize().getHeight() / (maxY - minY);
+        scale = Math.min(scaleX, scaleY);
+
+        if(scale == scaleX)
+        {
+            double yIncrement = (getSize().getHeight() / scale - (maxY - minY)) / 2;
+            maxY += yIncrement;
+            minY -= yIncrement;
+        }
+        if(scale == scaleY)
+        {
+            double xIncrement = (getSize().getWidth() / scale - (maxX - minX)) / 2;
+            maxX += xIncrement;
+            minX -= xIncrement;
+        }
+
+        Graphics2D canvas = (Graphics2D)g;
+        Stroke oldStroke = canvas.getStroke();
+        Color oldColor = canvas.getColor();
+        Paint oldPaint = canvas.getPaint();
+        Font oldFont = canvas.getFont();
+
+        if(showAxis) paintAxis(canvas);
+        paintGraphics(canvas);
+        if(showMarkers) paintMarkers(canvas);
+        canvas.setFont(oldFont);
+        canvas.setPaint(oldPaint);
+        canvas.setColor(oldColor);
+        canvas.setStroke(oldStroke);
+    }
+
 }
