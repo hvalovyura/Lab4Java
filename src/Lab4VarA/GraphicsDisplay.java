@@ -3,10 +3,7 @@ package Lab4VarA;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.font.FontRenderContext;
-import java.awt.geom.GeneralPath;
-import java.awt.geom.Line2D;
-import java.awt.geom.Point2D;
-import java.awt.geom.Rectangle2D;
+import java.awt.geom.*;
 
 public class GraphicsDisplay extends JPanel
 {
@@ -126,6 +123,22 @@ public class GraphicsDisplay extends JPanel
             Rectangle2D bounds = axisFont.getStringBounds("x", context);
             Point2D.Double labelPos = xyToPoint(maxX, 0);
             canvas.drawString("x", (float)(labelPos.getX() - bounds.getWidth() - 10), (float)(labelPos.getY() + bounds.getY()));
+        }
+    }
+
+    protected void paintMarkers(Graphics2D canvas)
+    {
+        canvas.setStroke(markerStroke);
+        canvas.setColor(Color.RED);
+        canvas.setPaint(Color.RED);
+        for(Double[] point: graphicsData)
+        {
+            Ellipse2D.Double marker = new Ellipse2D.Double();
+            Point2D.Double center = xyToPoint(point[0], point[1]);
+            Point2D.Double corner = shiftPoint(center, 3, 3);
+            marker.setFrameFromCenter(center, corner);
+            canvas.draw(marker);
+            canvas.fill(marker);
         }
     }
 
