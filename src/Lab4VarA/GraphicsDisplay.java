@@ -33,5 +33,20 @@ public class GraphicsDisplay extends JPanel
         axisFont = new Font("Serif", Font.BOLD, 36);
     }
 
+    public void showGraphics(Double[][] graphicsData)
+    {
+        this.graphicsData = graphicsData;
+        repaint();
+    }
 
+    public void setShowAxis(boolean showAxis) {
+        this.showAxis = showAxis;
+        repaint();
+    }
+
+    public void setShowMarkers(boolean showMarkers) {
+        this.showMarkers = showMarkers;
+        repaint();
+    }
+    
 }
