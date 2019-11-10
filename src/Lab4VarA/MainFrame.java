@@ -7,7 +7,17 @@ import java.awt.*;
 
 public class MainFrame extends JFrame
 {
+    private static final int WIDTH = 800;
+    private static final int HEIGHT = 600;
 
+    private JFileChooser fileChooser = null;
+
+    private JCheckBoxMenuItem showAxisMenuItem;
+    private JCheckBoxMenuItem showMarkersMenuItem;
+
+    private GraphicsDisplay display = new GraphicsDisplay();
+
+    private boolean fileLoaded = false;
 
     public static void main(String[] args)
     {
