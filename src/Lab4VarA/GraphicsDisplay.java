@@ -28,7 +28,9 @@ public class GraphicsDisplay extends JPanel
         setBackground(Color.WHITE);
 
         graphicsStroke = new BasicStroke(2.0f, BasicStroke.CAP_BUTT, BasicStroke.JOIN_ROUND, 10.0f, null, 0.0f);
-        
+        axisStroke = new BasicStroke(2.0f, BasicStroke.CAP_BUTT, BasicStroke.JOIN_MITER, 10.0f, null, 0.0f);
+        markerStroke = new BasicStroke(1.0f, BasicStroke.CAP_BUTT, BasicStroke.JOIN_MITER, 10.0f, null, 0.0f);
+        axisFont = new Font("Serif", Font.BOLD, 36);
     }
 
 
