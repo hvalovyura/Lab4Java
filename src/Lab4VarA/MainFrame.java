@@ -5,7 +5,7 @@ import javax.swing.event.MenuEvent;
 import javax.swing.event.MenuListener;
 import java.awt.*;
 import java.awt.event.ActionEvent;
-import java.io.File;
+import java.io.*;
 
 public class MainFrame extends JFrame
 {
@@ -78,9 +78,43 @@ public class MainFrame extends JFrame
         getContentPane().add(display, BorderLayout.CENTER);
     }
 
+    protected void openGraphics(File selectedFile)
+    {
+        try
+        {
+            DataInputStream in = new DataInputStream(new FileInputStream(selectedFile));
+            Double[][] graphicsData = new Double[in.available()/(Double.SIZE/8)/2][];
+            int i = 0;
+            while(in.available() > 0)
+            {
+                Double x = in.readDouble();
+                Double y = in.readDouble();
+                graphicsData[i++] = new Double[] {x, y};
+            }
+            if(graphicsData != null && graphicsData.length > 0)
+            {
+                fileLoaded = true;
+                display.showGraphics(graphicsData);
+            }
+            in.close();
+        }
+        catch(FileNotFoundException ex)
+        {
+            JOptionPane.showMessageDialog(MainFrame.this, "Указанный файл не найден", "Ошибка загрузки данных", JOptionPane.WARNING_MESSAGE);
+            return;
+        }
+        catch(IOException ex)
+        {
+            JOptionPane.showMessageDialog(MainFrame.this, "Ошибка чтения координат точек из файла", "Ошибка загрузки данных", JOptionPane.WARNING_MESSAGE);
+            return;
+        }
+    }
+
     public static void main(String[] args)
     {
-        System.out.println("qq");
+        MainFrame frame = new MainFrame();
+        frame.setDefaultCloseOperation(EXIT_ON_CLOSE);
+        frame.setVisible(true);
     }
 
     public class GraphicsMenuListener implements MenuListener
