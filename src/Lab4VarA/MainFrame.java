@@ -7,6 +7,7 @@ import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.io.*;
 
+@SuppressWarnings("serial")
 public class MainFrame extends JFrame
 {
     private static final int WIDTH = 800;
@@ -23,7 +24,7 @@ public class MainFrame extends JFrame
 
     public MainFrame()
     {
-        super("Построение графиков функций на основе подготовленных файлов");
+        super("Построение графиков функций на основе заранее подготовленных файлов");
         setSize(WIDTH, HEIGHT);
         Toolkit kit = Toolkit.getDefaultToolkit();
         setLocation((kit.getScreenSize().width - WIDTH) / 2, (kit.getScreenSize().height - HEIGHT) / 2);
@@ -71,7 +72,7 @@ public class MainFrame extends JFrame
         };
         showMarkersMenuItem = new JCheckBoxMenuItem(showMarkersAction);
         graphicsMenu.add(showMarkersMenuItem);
-        showMarkersMenuItem.setSelected(false);
+        showMarkersMenuItem.setSelected(true);
 
         graphicsMenu.addMenuListener(new GraphicsMenuListener());
 
@@ -113,11 +114,11 @@ public class MainFrame extends JFrame
     public static void main(String[] args)
     {
         MainFrame frame = new MainFrame();
-        frame.setDefaultCloseOperation(EXIT_ON_CLOSE);
+        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.setVisible(true);
     }
 
-    public class GraphicsMenuListener implements MenuListener
+    private class GraphicsMenuListener implements MenuListener
     {
 
         @Override

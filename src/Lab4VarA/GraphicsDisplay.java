@@ -5,6 +5,7 @@ import java.awt.*;
 import java.awt.font.FontRenderContext;
 import java.awt.geom.*;
 
+@SuppressWarnings("serial")
 public class GraphicsDisplay extends JPanel
 {
     private Double[][] graphicsData;
@@ -142,7 +143,7 @@ public class GraphicsDisplay extends JPanel
         }
     }
 
-    public void paintCoponent(Graphics g)
+    public void paintComponent(Graphics g)
     {
         super.paintComponent(g);
 
@@ -153,7 +154,7 @@ public class GraphicsDisplay extends JPanel
         minY = graphicsData[0][1];
         maxY = minY;
 
-        for(int i = 0; i < graphicsData.length; i++)
+        for(int i = 1; i < graphicsData.length; i++)
         {
             if(graphicsData[i][1] < minY)
             {
