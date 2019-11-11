@@ -30,7 +30,7 @@ public class GraphicsDisplay extends JPanel
     {
         setBackground(Color.WHITE);
 
-        graphicsStroke = new BasicStroke(2.0f, BasicStroke.CAP_BUTT, BasicStroke.JOIN_ROUND, 10.0f, new float[] {12, 3, 12, 3, 12, 3, 3, 3, 3, 3, 3, 3}, 0.0f);
+        graphicsStroke = new BasicStroke(2.0f, BasicStroke.CAP_BUTT, BasicStroke.JOIN_MITER, 10.0f, new float[] {12, 3, 12, 3, 12, 3, 3, 3, 3, 3, 3, 3}, 0.0f);
         axisStroke = new BasicStroke(2.0f, BasicStroke.CAP_BUTT, BasicStroke.JOIN_MITER, 10.0f, null, 0.0f);
         markerStroke = new BasicStroke(1.0f, BasicStroke.CAP_BUTT, BasicStroke.JOIN_MITER, 10.0f, null, 0.0f);
         axisFont = new Font("Serif", Font.BOLD, 36);
@@ -134,12 +134,23 @@ public class GraphicsDisplay extends JPanel
         canvas.setPaint(Color.RED);
         for(Double[] point: graphicsData)
         {
-            Ellipse2D.Double marker = new Ellipse2D.Double();
-            Point2D.Double center = xyToPoint(point[0], point[1]);
-            Point2D.Double corner = shiftPoint(center, 3, 3);
-            marker.setFrameFromCenter(center, corner);
-            canvas.draw(marker);
-            canvas.fill(marker);
+//            Ellipse2D.Double marker = new Ellipse2D.Double();
+//            Point2D.Double center = xyToPoint(point[0], point[1]);
+//            Point2D.Double corner = shiftPoint(center, 3, 3);
+//            marker.setFrameFromCenter(center, corner);
+//            canvas.draw(marker);
+//            canvas.fill(marker);
+            GeneralPath element = new GeneralPath();
+            Point2D.Double lineEnd = xyToPoint(point[0], point[1]);
+            element.moveTo(lineEnd.getX() + 5, lineEnd.getY() + 5);
+            element.lineTo(element.getCurrentPoint().getX() - 11, element.getCurrentPoint().getY());
+            element.lineTo(element.getCurrentPoint().getX(), element.getCurrentPoint().getY() - 11);
+            element.lineTo(element.getCurrentPoint().getX() + 11, element.getCurrentPoint().getY());
+            element.lineTo(element.getCurrentPoint().getX(), element.getCurrentPoint().getY() + 11);
+            element.lineTo(element.getCurrentPoint().getX() - 11, element.getCurrentPoint().getY() - 11);
+            element.moveTo(element.getCurrentPoint().getX() + 11, element.getCurrentPoint().getY());
+            element.lineTo(element.getCurrentPoint().getX() - 11, element.getCurrentPoint().getY() + 11);
+            canvas.draw(element);
         }
     }
 
