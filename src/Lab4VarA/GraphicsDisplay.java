@@ -30,7 +30,7 @@ public class GraphicsDisplay extends JPanel
     {
         setBackground(Color.WHITE);
 
-        graphicsStroke = new BasicStroke(2.0f, BasicStroke.CAP_BUTT, BasicStroke.JOIN_MITER, 10.0f, new float[] {12, 3, 12, 3, 12, 3, 3, 3, 3, 3, 3, 3}, 0.0f);
+        graphicsStroke = new BasicStroke(2.0f, BasicStroke.CAP_BUTT, BasicStroke.JOIN_MITER, 10.0f, new float[] {12, 3}, 0.0f);
         axisStroke = new BasicStroke(2.0f, BasicStroke.CAP_BUTT, BasicStroke.JOIN_MITER, 10.0f, null, 0.0f);
         markerStroke = new BasicStroke(1.0f, BasicStroke.CAP_BUTT, BasicStroke.JOIN_MITER, 10.0f, null, 0.0f);
         axisFont = new Font("Serif", Font.BOLD, 36);
@@ -90,6 +90,7 @@ public class GraphicsDisplay extends JPanel
 
     protected void paintAxis(Graphics2D canvas)
     {
+
         canvas.setStroke(axisStroke);
         canvas.setColor(Color.BLACK);
         canvas.setPaint(Color.BLACK);
@@ -125,6 +126,9 @@ public class GraphicsDisplay extends JPanel
             Point2D.Double labelPos = xyToPoint(maxX, 0);
             canvas.drawString("x", (float)(labelPos.getX() - bounds.getWidth() - 10), (float)(labelPos.getY() + bounds.getY()));
         }
+        Rectangle2D bounds = axisFont.getStringBounds("0", context);
+        Point2D.Double labelPos = xyToPoint(0, 0);
+        canvas.drawString("0", (float)(labelPos.getX() - bounds.getWidth() - 10), (float)(labelPos.getY() + bounds.getY()));
     }
 
     protected void paintMarkers(Graphics2D canvas)
