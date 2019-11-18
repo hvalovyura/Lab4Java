@@ -42,7 +42,7 @@ public class GraphicsDisplay extends JPanel
         axisStroke = new BasicStroke(2.0f, BasicStroke.CAP_BUTT, BasicStroke.JOIN_MITER, 10.0f, null, 0.0f);
         markerStroke = new BasicStroke(1.0f, BasicStroke.CAP_BUTT, BasicStroke.JOIN_MITER, 10.0f, null, 0.0f);
         axisFont = new Font("Serif", Font.BOLD, 36);
-        labelsFont = new Font("Serif",0,10);
+        labelsFont = new Font("Serif",0,18);
         addMouseMotionListener(new MouseMotionHandler());
     }
 
@@ -137,12 +137,13 @@ public class GraphicsDisplay extends JPanel
             canvas.drawString("x", (float)(labelPos.getX() - bounds.getWidth() - 10), (float)(labelPos.getY() + bounds.getY()));
             if (selectedMarker >= 0)
             {
+                canvas.setFont(labelsFont);
                 Point2D.Double point = xyToPoint(graphicsData[selectedMarker][0].doubleValue(), graphicsData[selectedMarker][1].doubleValue());
                 String label = "X=" + formatter.format(graphicsData[selectedMarker][0]) +
                         ", Y=" + formatter.format(graphicsData[selectedMarker][1]);
                 bounds = labelsFont.getStringBounds(label, context);
                 canvas.setColor(Color.BLACK);
-                canvas.drawString(label, (float)(point.getX() + 5.0D), (float)(point.getY() - bounds.getHeight()));
+                canvas.drawString(label, (float)(point.getX()), (float)(point.getY() - bounds.getHeight()));
             }
         }
 
