@@ -2,12 +2,17 @@ package Lab4VarA;
 
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseMotionListener;
 import java.awt.font.FontRenderContext;
 import java.awt.geom.*;
+import java.text.DecimalFormat;
+import java.text.NumberFormat;
 
 @SuppressWarnings("serial")
 public class GraphicsDisplay extends JPanel
 {
+    private int selectedMarker = -1;
     private Double[][] graphicsData;
 
     private boolean showAxis = true;
@@ -24,7 +29,10 @@ public class GraphicsDisplay extends JPanel
     private BasicStroke axisStroke;
     private BasicStroke markerStroke;
 
+    private static DecimalFormat formatter=(DecimalFormat) NumberFormat.getInstance();
+
     private Font axisFont;
+    private Font labelsFont;
 
     public GraphicsDisplay()
     {
@@ -34,6 +42,8 @@ public class GraphicsDisplay extends JPanel
         axisStroke = new BasicStroke(2.0f, BasicStroke.CAP_BUTT, BasicStroke.JOIN_MITER, 10.0f, null, 0.0f);
         markerStroke = new BasicStroke(1.0f, BasicStroke.CAP_BUTT, BasicStroke.JOIN_MITER, 10.0f, null, 0.0f);
         axisFont = new Font("Serif", Font.BOLD, 36);
+        labelsFont = new Font("Serif",0,10);
+        addMouseMotionListener(new MouseMotionHandler());
     }
 
     public void showGraphics(Double[][] graphicsData)
@@ -125,10 +135,17 @@ public class GraphicsDisplay extends JPanel
             Rectangle2D bounds = axisFont.getStringBounds("x", context);
             Point2D.Double labelPos = xyToPoint(maxX, 0);
             canvas.drawString("x", (float)(labelPos.getX() - bounds.getWidth() - 10), (float)(labelPos.getY() + bounds.getY()));
+            if (selectedMarker >= 0)
+            {
+                Point2D.Double point = xyToPoint(graphicsData[selectedMarker][0].doubleValue(), graphicsData[selectedMarker][1].doubleValue());
+                String label = "X=" + formatter.format(graphicsData[selectedMarker][0]) +
+                        ", Y=" + formatter.format(graphicsData[selectedMarker][1]);
+                bounds = labelsFont.getStringBounds(label, context);
+                canvas.setColor(Color.BLACK);
+                canvas.drawString(label, (float)(point.getX() + 5.0D), (float)(point.getY() - bounds.getHeight()));
+            }
         }
-        Rectangle2D bounds = axisFont.getStringBounds("0", context);
-        Point2D.Double labelPos = xyToPoint(0, 0);
-        canvas.drawString("0", (float)(labelPos.getX() - bounds.getWidth() - 10), (float)(labelPos.getY() + bounds.getY()));
+
     }
 
     protected void paintMarkers(Graphics2D canvas)
@@ -220,6 +237,44 @@ public class GraphicsDisplay extends JPanel
         canvas.setPaint(oldPaint);
         canvas.setColor(oldColor);
         canvas.setStroke(oldStroke);
+    }
+
+    protected int findSelectedPoint(int x, int y)
+    {
+        if (graphicsData == null) return -1;
+        int pos = 0;
+        for(Double[] point : graphicsData)
+        {
+            Point2D.Double screenPoint = xyToPoint(point[0].doubleValue(), point[1].doubleValue());
+            double distance = (screenPoint.getX()-x)*(screenPoint.getX()-x)+(screenPoint.getY()-y)*(screenPoint.getY()-y);
+            if(distance < 100) return pos;
+            pos++;
+        }
+        return -1;
+
+    }
+
+    public class MouseMotionHandler implements MouseMotionListener
+    {
+
+        @Override
+        public void mouseDragged(MouseEvent e) {
+
+        }
+
+        @Override
+        public void mouseMoved(MouseEvent e) {
+            selectedMarker = findSelectedPoint(e.getX(), e.getY());
+            if(selectedMarker >= 1)
+            {
+                setCursor(Cursor.getPredefinedCursor(12));
+            }
+            else
+            {
+                setCursor(Cursor.getPredefinedCursor(0));
+            }
+            repaint();
+        }
     }
 
 }
