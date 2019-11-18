@@ -2,6 +2,7 @@ package Lab4VarA;
 
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseMotionListener;
 import java.awt.font.FontRenderContext;
@@ -14,6 +15,9 @@ public class GraphicsDisplay extends JPanel
 {
     private int selectedMarker = -1;
     private Double[][] graphicsData;
+    private double[][] viewport = new double[2][2];
+
+    private Rectangle2D.Double selectionRect = new Rectangle2D.Double();
 
     private boolean showAxis = true;
     private boolean showMarkers = true;
@@ -28,6 +32,7 @@ public class GraphicsDisplay extends JPanel
     private BasicStroke graphicsStroke;
     private BasicStroke axisStroke;
     private BasicStroke markerStroke;
+    private BasicStroke selectionStroke;
 
     private static DecimalFormat formatter=(DecimalFormat) NumberFormat.getInstance();
 
@@ -38,12 +43,14 @@ public class GraphicsDisplay extends JPanel
     {
         setBackground(Color.WHITE);
 
+        selectionStroke = new BasicStroke(1.0F, 0, 0, 10.0F, new float[] { 10, 10 }, 0.0F);
         graphicsStroke = new BasicStroke(2.0f, BasicStroke.CAP_BUTT, BasicStroke.JOIN_MITER, 10.0f, new float[] {12, 3}, 0.0f);
         axisStroke = new BasicStroke(2.0f, BasicStroke.CAP_BUTT, BasicStroke.JOIN_MITER, 10.0f, null, 0.0f);
         markerStroke = new BasicStroke(1.0f, BasicStroke.CAP_BUTT, BasicStroke.JOIN_MITER, 10.0f, null, 0.0f);
         axisFont = new Font("Serif", Font.BOLD, 36);
         labelsFont = new Font("Serif",0,18);
         addMouseMotionListener(new MouseMotionHandler());
+        addMouseListener(new MouseHandler());
     }
 
     public void showGraphics(Double[][] graphicsData)
@@ -67,6 +74,11 @@ public class GraphicsDisplay extends JPanel
         double deltaX = x - minX;
         double deltaY = maxY - y;
         return new Point2D.Double(deltaX*scale, deltaY*scale);
+    }
+
+    protected double[] translatePointToXY(int x, int y)
+    {
+        return new double[] { this.viewport[0][0] + x / this.scale, this.viewport[0][1] - y / this.scale };
     }
 
     protected Point2D.Double shiftPoint(Point2D.Double src, double deltaX, double deltaY)
@@ -234,10 +246,12 @@ public class GraphicsDisplay extends JPanel
         if(showAxis) paintAxis(canvas);
         paintGraphics(canvas);
         if(showMarkers) paintMarkers(canvas);
+
         canvas.setFont(oldFont);
         canvas.setPaint(oldPaint);
         canvas.setColor(oldColor);
         canvas.setStroke(oldStroke);
+        paintSelection(canvas);
     }
 
     protected int findSelectedPoint(int x, int y)
@@ -252,6 +266,35 @@ public class GraphicsDisplay extends JPanel
             pos++;
         }
         return -1;
+    }
+
+    private void paintSelection(Graphics2D canvas) {
+        canvas.setStroke(selectionStroke);
+        canvas.setColor(Color.BLACK);
+        canvas.draw(selectionRect);
+    }
+
+    public class MouseHandler extends MouseAdapter {
+
+        public void mouseClicked(MouseEvent ev)
+        {
+
+        }
+
+        public void mousePressed(MouseEvent ev)
+        {
+            setCursor(Cursor.getPredefinedCursor(5));
+            selectionRect.setFrame(ev.getX(), ev.getY(), 1.0D, 1.0D);
+            //if (ev.getButton() != 1) return;
+            //selectedMarker = findSelectedPoint(ev.getX(), ev.getY());
+//            originalPoint = translatePointToXY(ev.getX(), ev.getY());
+        }
+
+        public void mouseReleased(MouseEvent ev)
+        {
+            setCursor(Cursor.getPredefinedCursor(0));
+            selectionRect.setFrame(ev.getX(), ev.getY(), 0, 0);
+        }
 
     }
 
@@ -260,7 +303,21 @@ public class GraphicsDisplay extends JPanel
 
         @Override
         public void mouseDragged(MouseEvent e) {
-
+            setCursor(Cursor.getPredefinedCursor(5));
+            double width = e.getX() - selectionRect.getX();
+            double height = e.getY() - selectionRect.getY();
+            selectionRect.setFrame(selectionRect.getX(), selectionRect.getY(), width, height);
+            repaint();
+//            double width = e.getX() - selectionRect.getX();
+//            if (width < 5.0D) {
+//                width = 5.0D;
+//            }
+//            double height = e.getY() - selectionRect.getY();
+//            if (height < 5.0D) {
+//                height = 5.0D;
+//            }
+//            selectionRect.setFrame(selectionRect.getX(), selectionRect.getY(), width, height);
+//            repaint();
         }
 
         @Override
