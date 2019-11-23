@@ -6,6 +6,7 @@ import javax.swing.event.MenuListener;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.io.*;
+import java.util.ArrayList;
 
 @SuppressWarnings("serial")
 public class MainFrame extends JFrame
@@ -84,20 +85,17 @@ public class MainFrame extends JFrame
         try
         {
             DataInputStream in = new DataInputStream(new FileInputStream(selectedFile));
-            Double[][] graphicsData = new Double[in.available()/(Double.SIZE/8)/2][];
-            int i = 0;
-            while(in.available() > 0)
-            {
-                Double x = in.readDouble();
-                Double y = in.readDouble();
-                graphicsData[i++] = new Double[] {x, y};
+            ArrayList graphicsData = new ArrayList(50);
+            while (in.available() > 0) {
+                Double x = Double.valueOf(in.readDouble());
+                Double y = Double.valueOf(in.readDouble());
+                graphicsData.add(new Double[] { x, y });
             }
-            if(graphicsData != null && graphicsData.length > 0)
-            {
+            if (graphicsData.size() > 0) {
                 fileLoaded = true;
+                //resetGraphicsMenuItem.setEnabled(true);
                 display.showGraphics(graphicsData);
             }
-            in.close();
         }
         catch(FileNotFoundException ex)
         {
