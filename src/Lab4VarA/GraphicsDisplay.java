@@ -178,6 +178,17 @@ public class GraphicsDisplay extends JPanel
             Point2D.Double labelPos = xyToPoint(this.viewport[1][0],0.0D);
             canvas.drawString("x",(float)(labelPos.x - bounds.getWidth() - 10),(float)(labelPos.y - bounds.getHeight() / 2));
         }
+        if (selectedMarker >= 0)
+        {
+            canvas.setFont(labelsFont);
+            Point2D.Double point = xyToPoint(((Double[])graphicsData.get(selectedMarker))[0].doubleValue(),
+                    ((Double[])graphicsData.get(selectedMarker))[1].doubleValue());
+            String label = "X=" + formatter.format(((Double[])graphicsData.get(selectedMarker))[0]) +
+                    ", Y=" + formatter.format(((Double[])graphicsData.get(selectedMarker))[1]);
+            Rectangle2D bounds = labelsFont.getStringBounds(label, context);
+            canvas.setColor(Color.BLACK);
+            canvas.drawString(label, (float)(point.getX()), (float)(point.getY() - bounds.getHeight()));
+        }
     }
 
     protected void paintMarkers(Graphics2D canvas)
@@ -214,6 +225,7 @@ public class GraphicsDisplay extends JPanel
             element.lineTo(element.getCurrentPoint().getX() - 11, element.getCurrentPoint().getY() + 11);
             canvas.draw(element);
         }
+
     }
 
     public void paintComponent(Graphics g)
@@ -241,6 +253,8 @@ public class GraphicsDisplay extends JPanel
         canvas.setStroke(oldStroke);
         paintSelection(canvas);
     }
+
+
 
     protected int findSelectedPoint(int x, int y)
     {
